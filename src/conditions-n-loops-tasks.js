@@ -70,8 +70,17 @@ function getMaxNumber(a, b, c) {
  * {x: 1, y: 1}, {x: 2, y: 8} => false
  * {x: 1, y: 1}, {x: 2, y: 8} => false
  */
-function canQueenCaptureKing(/* queen, king */) {
-  throw new Error('Not implemented');
+function canQueenCaptureKing(queen, king) {
+  if (queen.x === king.x || queen.y === king.y) {
+    return true;
+  }
+  const rowDiff = queen.x - king.x;
+  const colDiff = queen.y - king.y;
+  if (rowDiff === colDiff || rowDiff === -colDiff) {
+    return true;
+  }
+
+  return false;
 }
 
 /**
@@ -232,8 +241,13 @@ function convertNumberToString(numberStr) {
  *  '0123210'   => true
  *  'qweqwe'    => false
  */
-function isPalindrome(/* str */) {
-  throw new Error('Not implemented');
+function isPalindrome(str) {
+  for (let i = 0, j = str.length - 1; i < j; i += 1, j -= 1) {
+    if (str[i] !== str[j]) {
+      return false;
+    }
+  }
+  return true;
 }
 
 /**
@@ -250,8 +264,13 @@ function isPalindrome(/* str */) {
  *  'qwerty', 'Q'     => -1
  *  'qwerty', 'p'     => -1
  */
-function getIndexOf(/* str, letter */) {
-  throw new Error('Not implemented');
+function getIndexOf(str, letter) {
+  for (let i = 0; i < str.length; i += 1) {
+    if (str[i] === letter) {
+      return i;
+    }
+  }
+  return -1;
 }
 
 /**
@@ -269,8 +288,16 @@ function getIndexOf(/* str, letter */) {
  *  12345, 0    => false
  *  12345, 6    => false
  */
-function isContainNumber(/* num, digit */) {
-  throw new Error('Not implemented');
+function isContainNumber(num, digit) {
+  let numCopy = num;
+  while (numCopy !== 0) {
+    const lastDigit = numCopy % 10;
+    if (lastDigit === digit) {
+      return true;
+    }
+    numCopy = (numCopy - lastDigit) / 10;
+  }
+  return false;
 }
 
 /**
@@ -286,8 +313,21 @@ function isContainNumber(/* num, digit */) {
  *  [2, 3, 9, 5] => 2       => 2 + 3 === 5 then balance element is 9 and its index = 2
  *  [1, 2, 3, 4, 5] => -1   => no balance element
  */
-function getBalanceIndex(/* arr */) {
-  throw new Error('Not implemented');
+function getBalanceIndex(arr) {
+  for (let i = 0; i < arr.length; i += 1) {
+    let leftSum = 0;
+    for (let j = 0; j < i; j += 1) {
+      leftSum += arr[j];
+    }
+    let rightSum = 0;
+    for (let k = i + 1; k < arr.length; k += 1) {
+      rightSum += arr[k];
+    }
+    if (leftSum === rightSum) {
+      return i;
+    }
+  }
+  return -1;
 }
 
 /**
@@ -311,10 +351,46 @@ function getBalanceIndex(/* arr */) {
  *          [10, 9,  8,  7]
  *        ]
  */
-function getSpiralMatrix(/* size */) {
-  throw new Error('Not implemented');
-}
+function getSpiralMatrix(size) {
+  if (size <= 0) {
+    return [];
+  }
+  const matrix = [];
+  for (let i = 0; i < size; i += 1) {
+    matrix.push(Array(size).fill(0));
+  }
 
+  let value = 1;
+  let top = 0;
+  let bottom = size - 1;
+  let left = 0;
+  let right = size - 1;
+
+  while (value <= size * size) {
+    // Move from left to right
+    for (let i = left; i <= right; i += 1) {
+      matrix[top][i] = value;
+      value += 1;
+    }
+    top += 1;
+    for (let i = top; i <= bottom; i += 1) {
+      matrix[i][right] = value;
+      value += 1;
+    }
+    right -= 1;
+    for (let i = right; i >= left; i -= 1) {
+      matrix[bottom][i] = value;
+      value += 1;
+    }
+    bottom -= 1;
+    for (let i = bottom; i >= top; i -= 1) {
+      matrix[i][left] = value;
+      value += 1;
+    }
+    left += 1;
+  }
+  return matrix;
+}
 /**
  * Rotates a matrix by 90 degrees clockwise in place.
  * Take into account that the matrix size can be very large. Consider how you can optimize your solution.
@@ -330,8 +406,26 @@ function getSpiralMatrix(/* size */) {
  *    [7, 8, 9]         [9, 6, 3]
  *  ]                 ]
  */
-function rotateMatrix(/* matrix */) {
-  throw new Error('Not implemented');
+function rotateMatrix(matrix) {
+  const n = matrix.length;
+
+  // Первая часть: транспонирование
+  const transposedMatrix = Array.from({ length: n }, () => Array(n));
+  for (let i = 0; i < n; i += 1) {
+    for (let j = 0; j < n; j += 1) {
+      transposedMatrix[i][j] = matrix[j][i];
+    }
+  }
+
+  // Вторая часть: отражение по вертикали
+  const reflectedMatrix = Array.from({ length: n }, () => Array(n));
+  for (let i = 0; i < n; i += 1) {
+    for (let j = 0; j < n; j += 1) {
+      reflectedMatrix[i][j] = transposedMatrix[i][n - 1 - j];
+    }
+  }
+
+  return reflectedMatrix;
 }
 
 /**
@@ -348,8 +442,22 @@ function rotateMatrix(/* matrix */) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function sortByAsc(/* arr */) {
-  throw new Error('Not implemented');
+function sortByAsc(arr) {
+  const sortedArray = [...arr]; // Создаем копию массива
+  for (let i = 0; i < sortedArray.length - 1; i += 1) {
+    let minIndex = i;
+    for (let j = i + 1; j < sortedArray.length; j += 1) {
+      if (sortedArray[j] < sortedArray[minIndex]) {
+        minIndex = j;
+      }
+    }
+    if (minIndex !== i) {
+      const temp = sortedArray[i];
+      sortedArray[i] = sortedArray[minIndex];
+      sortedArray[minIndex] = temp;
+    }
+  }
+  return sortedArray;
 }
 
 /**
@@ -369,8 +477,23 @@ function sortByAsc(/* arr */) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function shuffleChar(str, iterations) {
+  const { length } = str;
+  let result = str;
+
+  for (let i = 0; i < iterations; i += 1) {
+    let oddChars = '';
+    let evenChars = '';
+    for (let j = 0; j < length; j += 1) {
+      if (j % 2 === 0) {
+        evenChars += result[j];
+      } else {
+        oddChars += result[j];
+      }
+    }
+    result = evenChars + oddChars;
+  }
+  return result;
 }
 
 /**
@@ -390,8 +513,27 @@ function shuffleChar(/* str, iterations */) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  const digits = Array.from(String(number), Number);
+
+  let i = digits.length - 2;
+  while (i >= 0 && digits[i] >= digits[i + 1]) {
+    i -= 1;
+  }
+
+  if (i === -1) {
+    return number;
+  }
+
+  let j = digits.length - 1;
+  while (digits[j] <= digits[i]) {
+    j -= 1;
+  }
+
+  [digits[i], digits[j]] = [digits[j], digits[i]];
+
+  const result = parseInt(digits.join(''), 10);
+  return result;
 }
 
 module.exports = {
