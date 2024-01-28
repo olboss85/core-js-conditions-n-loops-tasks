@@ -217,7 +217,6 @@ function convertNumberToString(numberStr) {
         result += 'point ';
         break;
       case '-':
-        // Check if 'minus' is already added
         if (!isNegative) {
           isNegative = true;
           result += 'minus ';
@@ -356,10 +355,7 @@ function getSpiralMatrix(size) {
   if (size <= 0) {
     return [];
   }
-  const matrix = [];
-  for (let i = 0; i < size; i += 1) {
-    matrix.push(Array(size).fill(0));
-  }
+  const matrix = Array.from({ length: size }, () => Array(size).fill(0));
 
   let value = 1;
   let top = 0;
@@ -368,7 +364,6 @@ function getSpiralMatrix(size) {
   let right = size - 1;
 
   while (value <= size * size) {
-    // Move from left to right
     for (let i = left; i <= right; i += 1) {
       matrix[top][i] = value;
       value += 1;
@@ -410,7 +405,6 @@ function getSpiralMatrix(size) {
 function rotateMatrix(matrix) {
   const n = matrix.length;
 
-  // Первая часть: транспонирование
   const transposedMatrix = Array.from({ length: n }, () => Array(n));
   for (let i = 0; i < n; i += 1) {
     for (let j = 0; j < n; j += 1) {
@@ -418,7 +412,6 @@ function rotateMatrix(matrix) {
     }
   }
 
-  // Вторая часть: отражение по вертикали
   const reflectedMatrix = Array.from({ length: n }, () => Array(n));
   for (let i = 0; i < n; i += 1) {
     for (let j = 0; j < n; j += 1) {
@@ -444,21 +437,22 @@ function rotateMatrix(matrix) {
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
 // function sortByAsc(arr) {
-//   const sortedArray = [...arr]; // Создаем копию массива
-//   for (let i = 0; i < sortedArray.length - 1; i += 1) {
-//     let minIndex = i;
-//     for (let j = i + 1; j < sortedArray.length; j += 1) {
-//       if (sortedArray[j] < sortedArray[minIndex]) {
-//         minIndex = j;
+//   const { length } = arr; // Use object destructuring for array length
+//   const sortedArr = [...arr]; // Create a new array to avoid modifying the input array
+
+//   // Bubble Sort Algorithm
+//   for (let i = 0; i < length - 1; i += 1) {
+//     for (let j = 0; j < length - i - 1; j += 1) {
+//       if (sortedArr[j] > sortedArr[j + 1]) {
+//         // Swap sortedArr[j] and sortedArr[j+1]
+//         const temp = sortedArr[j];
+//         sortedArr[j] = sortedArr[j + 1];
+//         sortedArr[j + 1] = temp;
 //       }
 //     }
-//     if (minIndex !== i) {
-//       const temp = sortedArray[i];
-//       sortedArray[i] = sortedArray[minIndex];
-//       sortedArray[minIndex] = temp;
-//     }
 //   }
-//   return sortedArray;
+
+//   return sortedArr;
 // }
 
 /**
@@ -524,19 +518,21 @@ function getNearestBigger(number) {
     i -= 1;
   }
 
-  if (i === -1) {
-    return number;
+  if (i >= 0) {
+    let j = digits.length - 1;
+    while (digits[j] <= digits[i]) {
+      j -= 1;
+    }
+    [digits[i], digits[j]] = [digits[j], digits[i]];
+
+    const rightPart = digits.slice(i + 1);
+    const sortedRightPart = rightPart.sort();
+
+    const result = digits.slice(0, i + 1).concat(sortedRightPart);
+    return parseInt(result.join(''), 10);
   }
 
-  let j = digits.length - 1;
-  while (digits[j] <= digits[i]) {
-    j -= 1;
-  }
-
-  [digits[i], digits[j]] = [digits[j], digits[i]];
-
-  const result = parseInt(digits.join(''), 10);
-  return result;
+  return -1;
 }
 
 module.exports = {
