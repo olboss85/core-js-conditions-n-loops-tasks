@@ -70,6 +70,7 @@ function getMaxNumber(a, b, c) {
  * {x: 1, y: 1}, {x: 2, y: 8} => false
  * {x: 1, y: 1}, {x: 2, y: 8} => false
  */
+
 function canQueenCaptureKing(queen, king) {
   if (queen.x === king.x || queen.y === king.y) {
     return true;
@@ -216,14 +217,14 @@ function convertNumberToString(numberStr) {
         result += 'point ';
         break;
       case '-':
-        isNegative = true;
+        // Check if 'minus' is already added
+        if (!isNegative) {
+          isNegative = true;
+          result += 'minus ';
+        }
         break;
       default:
     }
-  }
-
-  if (isNegative) {
-    result = `minus ${result}`;
   }
 
   return result.trim();
@@ -442,23 +443,23 @@ function rotateMatrix(matrix) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function sortByAsc(arr) {
-  const sortedArray = [...arr]; // Создаем копию массива
-  for (let i = 0; i < sortedArray.length - 1; i += 1) {
-    let minIndex = i;
-    for (let j = i + 1; j < sortedArray.length; j += 1) {
-      if (sortedArray[j] < sortedArray[minIndex]) {
-        minIndex = j;
-      }
-    }
-    if (minIndex !== i) {
-      const temp = sortedArray[i];
-      sortedArray[i] = sortedArray[minIndex];
-      sortedArray[minIndex] = temp;
-    }
-  }
-  return sortedArray;
-}
+// function sortByAsc(arr) {
+//   const sortedArray = [...arr]; // Создаем копию массива
+//   for (let i = 0; i < sortedArray.length - 1; i += 1) {
+//     let minIndex = i;
+//     for (let j = i + 1; j < sortedArray.length; j += 1) {
+//       if (sortedArray[j] < sortedArray[minIndex]) {
+//         minIndex = j;
+//       }
+//     }
+//     if (minIndex !== i) {
+//       const temp = sortedArray[i];
+//       sortedArray[i] = sortedArray[minIndex];
+//       sortedArray[minIndex] = temp;
+//     }
+//   }
+//   return sortedArray;
+// }
 
 /**
  * Shuffles characters in a string so that the characters with an odd index are moved to the end of the string at each iteration.
@@ -478,22 +479,24 @@ function sortByAsc(arr) {
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
 function shuffleChar(str, iterations) {
-  const { length } = str;
-  let result = str;
+  const chars = Array.from(str);
 
   for (let i = 0; i < iterations; i += 1) {
-    let oddChars = '';
-    let evenChars = '';
-    for (let j = 0; j < length; j += 1) {
-      if (j % 2 === 0) {
-        evenChars += result[j];
-      } else {
-        oddChars += result[j];
-      }
+    let currentIndex = chars.length;
+    let randomIndex;
+
+    while (currentIndex !== 0) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      [chars[currentIndex], chars[randomIndex]] = [
+        chars[randomIndex],
+        chars[currentIndex],
+      ];
     }
-    result = evenChars + oddChars;
   }
-  return result;
+
+  return chars.join('');
 }
 
 /**
@@ -549,7 +552,7 @@ module.exports = {
   getBalanceIndex,
   getSpiralMatrix,
   rotateMatrix,
-  sortByAsc,
+  // sortByAsc,
   shuffleChar,
   getNearestBigger,
 };
